@@ -45,7 +45,9 @@ CREATE TABLE Employee (
     full_name VARCHAR(100) NOT NULL,
     address TEXT,
     social_security_number VARCHAR(15) UNIQUE NOT NULL,
-    role VARCHAR(50)
+    role VARCHAR(50),
+    email VARCHAR(100),
+    password VARCHAR(100) 
 );
 
 CREATE TABLE Reservation (
@@ -66,4 +68,15 @@ CREATE TABLE Rental (
     end_date DATE,
     payment_status BOOLEAN DEFAULT FALSE,
     room_id INT REFERENCES Room(room_id) ON DELETE SET NULL
+);
+
+CREATE TABLE ArchivedRental (
+    rental_id SERIAL PRIMARY KEY,
+    reservation_id INT,
+    guest_id INT,
+    employee_id INT,
+    start_date DATE,
+    end_date DATE,
+    payment_status BOOLEAN,
+    room_id INT
 );

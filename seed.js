@@ -80,23 +80,29 @@ const staffNames = [
 
     // Employees
     console.log("Seeding Employees...");
-    let empIndex = 0;
-    for (let hotelId = 1; hotelId <= 40; hotelId++) {
-      const managerName = staffNames[empIndex++ % staffNames.length];
-      await client.query(`
-        INSERT INTO Employee (hotel_id, full_name, address, social_security_number, role)
-        VALUES ($1, $2, $3, $4, 'manager')
-      `, [hotelId, managerName, `Manager Address ${hotelId}`, `100-${hotelId}-000`]);
+let empIndex = 0;
+for (let hotelId = 1; hotelId <= 40; hotelId++) {
+  const managerName = staffNames[empIndex++ % staffNames.length];
+  const managerEmail = `${managerName.toLowerCase().split(' ').join('.')}@hotel.com`;
+  const managerPassword = '1234'; // You can improve this later with hashing
 
-      const staffCount = 3 + Math.floor(Math.random() * 3); // 3 to 5 staff
-      for (let s = 0; s < staffCount; s++) {
-        const staffName = staffNames[empIndex++ % staffNames.length];
-        await client.query(`
-          INSERT INTO Employee (hotel_id, full_name, address, social_security_number, role)
-          VALUES ($1, $2, $3, $4, 'staff')
-        `, [hotelId, staffName, `Staff Address ${hotelId}-${s}`, `200-${hotelId}-${s}`]);
-      }
-    }
+  await client.query(`
+    INSERT INTO Employee (hotel_id, full_name, address, social_security_number, role, email, password)
+    VALUES ($1, $2, $3, $4, 'manager', $5, $6)
+  `, [hotelId, managerName, `Manager Address ${hotelId}`, `100-${hotelId}-000`, managerEmail, managerPassword]);
+
+  const staffCount = 3 + Math.floor(Math.random() * 3); // 3 to 5 staff
+  for (let s = 0; s < staffCount; s++) {
+    const staffName = staffNames[empIndex++ % staffNames.length];
+    const staffEmail = `${staffName.toLowerCase().split(' ').join('.')}@hotel.com`;
+    const staffPassword = 'password'; // Also dummy for now
+
+    await client.query(`
+      INSERT INTO Employee (hotel_id, full_name, address, social_security_number, role, email, password)
+      VALUES ($1, $2, $3, $4, 'staff', $5, $6)
+    `, [hotelId, staffName, `Staff Address ${hotelId}-${s}`, `200-${hotelId}-${s}`, staffEmail, staffPassword]);
+  }
+}
 
     // Guests
     console.log("Seeding Guests...");
